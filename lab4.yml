@@ -1,0 +1,44 @@
+---
+- name: Лабораторная работа 4
+  hosts: lab
+  become: true
+
+  tasks:
+    - name: Установка htop и tree
+      ansible.builtin.apt:
+        name:
+          - htop
+          - tree
+        state: present
+        update_cache: true
+
+    - name: Создание пользователя devuser
+      ansible.builtin.user:
+        name: devuser
+        shell: /bin/bash
+        state: present
+
+    - name: Создание каталога lab4
+      ansible.builtin.file:
+        path: /opt/lab4
+        state: directory
+        owner: devuser
+        mode: '0755'
+
+    - name: Создание каталога lab1
+      ansible.builtin.file:
+        path: /opt/lab1
+        state: directory
+        mode: '0755'
+
+    - name: Создание файла info.txt
+      ansible.builtin.copy:
+        dest: /opt/lab1/info.txt
+        content: "Выполнил: Темирбеков\n"
+        mode: '0644'
+
+    - name: Запуск службы cron
+      ansible.builtin.service:
+        name: cron
+        state: started
+        enabled: true
